@@ -79,6 +79,8 @@ def join(message):
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
           'count': session['receive_count']})
+    # Returns a new token that can be sent to the user
+    emit(video.initUser("resource"))
 
 
 @socketio.on('leave', namespace='/test')
