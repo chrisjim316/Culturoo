@@ -3,6 +3,7 @@ from threading import Lock
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
+import nltk
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -15,6 +16,10 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
 
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
 
 def background_thread():
     """Example of how to send server generated events to clients."""
@@ -22,9 +27,9 @@ def background_thread():
     while True:
         socketio.sleep(10)
         count += 1
-        socketio.emit('my_response',
-                      {'data': 'Server generated event', 'count': count},
-                      namespace='/test')
+        # socketio.emit('my_response',
+        #               {'data': 'Server generated event', 'count': count},
+        #               namespace='/test')
 
 
 @app.route('/')
@@ -35,8 +40,28 @@ def index():
 @socketio.on('my_event', namespace='/test')
 def test_message(message):
     session['receive_count'] = session.get('receive_count', 0) + 1
+    sentence = message['data']
+    tokens = nltk.word_tokenize(sentence)
+    tagged = nltk.pos_tag(tokens)
+    entities = nltk.ne_chunk(tagged)
+    List1 = []
+    for entity in list(entities):
+                print(entity)
+                if str(type(entity[0])) == "<class 'tuple'>":
+                    if check_if_Noun(entity[0][1]):
+                        print(str(entity[0][0]))
+                        List1.append(entity[0][0])
+                else:
+                    if entity[0] == "name":
+                        continue
+                    if entity[0] == "Hello":
+                        continue
+                    if check_if_Noun(entity[1]):
+                        print(entity[0])
+                        List1.append(entity[0])
+
     emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']})
+         {'data': str(list(List1)), 'count': session['receive_count']})
 
 
 @socketio.on('my_broadcast_event', namespace='/test')
@@ -107,6 +132,18 @@ def test_connect():
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
     print('Client disconnected', request.sid)
+
+def check_if_Noun(entity):
+    if entity == 'NN':
+        return True
+    if entity == 'NNP':
+        return True
+    if entity == 'NNS':
+        return True
+    if entity == "GPE":
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
