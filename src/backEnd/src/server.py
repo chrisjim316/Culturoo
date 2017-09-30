@@ -5,6 +5,9 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 import nltk
 
+from py_ms_cognitive import PyMsCognitiveImageSearch
+
+
 from apiclient.discovery import build
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
@@ -94,25 +97,14 @@ def test_message(message):
                         print(entity[0])
                         List1.append(entity[0])
 
-    global service
-    res = service.cse().list(
-        q='butterfly',
-        cx=' ** your cx **',
-        searchType='image',
-        num=3,
-        imgType='clipart',
-        fileType='png',
-        safe='off'
-    ).execute()
-    if not 'items' in res:
-        print(
-        'No result !!\nres is: {}'.format(res))
-    else:
-        for item in res['items']:
-            print('{}:\n\t{}'.format(item['title'], item['link']))
+    search_term = str(List1).strip('[]')
+    search_service = PyMsCognitiveImageSearch('202acb04bda84cc48f8bcf57027a30a2', search_term)
+    first_fifty_result = search_service.search(limit=50, format='json')  # 1-50
+    second_fifty_result = search_service.search(limit=50, format='json')  # 51-100
+
 
     emit('my_response',
-         {'data': str(list(List1)), 'count': session['receive_count']})
+         {'data': str(second_fifty_result[0].content_url), 'count': session['receive_count']})
 
 
 @socketio.on('my_broadcast_event', namespace='/test')
