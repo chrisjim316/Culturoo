@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from threading import Lock
-from flask import Flask, render_template, session, request
+from flask import Flask, render_template, session, request, Response
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 import nltk
-
+import json
 from py_ms_cognitive import PyMsCognitiveImageSearch
 
 from flask_cors import CORS
@@ -51,9 +51,49 @@ def index():
 
 @app.route('/postmethod', methods = ['POST'])
 def get_post_javascript_data():
+
     jsdata = request.form['text-input']
-    print(jsdata)
-    return jsdata
+    sentence = jsdata
+    tokens = nltk.word_tokenize(sentence)
+    tagged = nltk.pos_tag(tokens)
+    entities = nltk.ne_chunk(tagged)
+    List1 = []
+    for entity in list(entities):
+        #print(entity)
+        if str(type(entity[0])) == "<class 'tuple'>":
+            if check_if_Noun(entity[0][1]):
+                #print(str(entity[0][0]))
+                List1.append(entity[0][0])
+        else:
+            if entity[0] == "name":
+                continue
+            if entity[0] == "Hello":
+                continue
+            if check_if_Noun(entity[1]):
+                #print(entity[0])
+                List1.append(entity[0])
+
+    search_term = str(List1).strip('[]')
+    print(search_term)
+
+    image_urls = []
+
+    for term in List1:
+        search_service = PyMsCognitiveImageSearch('202acb04bda84cc48f8bcf57027a30a2', term)
+        first_fifty_result = search_service.search(limit=50, format='json')  # 1-50
+        second_fifty_result = search_service.search(limit=50, format='json')  # 51-100
+        image_urls.append(second_fifty_result[0].content_url) # take the first url
+
+    data = {
+        'keyWord': List1,
+        'url': image_urls
+    }
+
+    js = json.dumps(data)
+
+    resp = Response(js,status=200,mimetype='application/json')
+    print(js)
+    return resp
 
 @socketio.on('my_event_continuous', namespace='/test')
 def test_message_cont(message):
