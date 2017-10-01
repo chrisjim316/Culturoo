@@ -7,8 +7,10 @@ import nltk
 
 from py_ms_cognitive import PyMsCognitiveImageSearch
 
+from flask_cors import CORS
 
-from apiclient.discovery import build
+
+# from apiclient.discovery import build
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -16,6 +18,7 @@ from apiclient.discovery import build
 async_mode = None
 
 app = Flask(__name__)
+CORS(app)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
@@ -46,6 +49,11 @@ def background_thread():
 def index():
     return render_template('index.html', async_mode=socketio.async_mode)
 
+@app.route('/postmethod', methods = ['POST'])
+def get_post_javascript_data():
+    jsdata = request.form['text-input']
+    print(jsdata)
+    return jsdata
 
 @socketio.on('my_event_continuous', namespace='/test')
 def test_message_cont(message):
