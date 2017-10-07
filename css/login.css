@@ -1,0 +1,46 @@
+body, html {
+  background-color: black;
+  color: white;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  font-size: 30px;
+}
+
+.credentials {
+  background-color: #003380;
+  height: 800px;
+}
+
+input {
+  color: black;
+}
+
+.contactList {
+  background-color: black;
+  height: 800px;
+  border-radius; 30px;
+  padding-top: 50px;
+  width: 40%;
+  left: 5%;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: black;
+}
+
+tr:nth-child(odd) {
+    background-color: grey;
+}
