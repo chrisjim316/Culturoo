@@ -1,4 +1,4 @@
-# **Culturoo**
+# **CULTUROO**
 ![thumbnail](https://user-images.githubusercontent.com/26378494/31123037-30dcc1f0-a836-11e7-8df8-162a74f8f45d.png)
 ## [LIVE DEMO](https://chrisjim316.github.io/Culturoo/)    -     [SOURCE CODE](https://github.com/chrisjim316/Culturoo)
 
