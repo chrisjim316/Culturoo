@@ -1,0 +1,70 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- linking bootstrap to index.html-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- linking login.css to index.html -->
+  <link rel="stylesheet" type="text/css" href="css/login.css">
+  <!-- import jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- linking login.js to index.html -->
+  <script type="text/javascript" src="js/login.js"></script>
+</head>
+
+<body>
+
+<div class="row">
+  <div class="credentials col-md-6">
+    <form style="padding-top: 50px;">
+      <h1>User name:</h1>
+      <input type="text" name="username" id="username">
+      <h1>User password:</h1>
+      <input type="password" id="password"><br><br>
+      <button class="btn btn-basic" id="login">Login</button>
+      <h1><div id="errorMessage"></div></h1>
+    </form>
+  </div>
+
+  <div class="contactList col-md-6">
+    <div class="well">
+      <table>
+        <tr>
+          <th>Username</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        <tr>
+          <td>Test user 1</td>
+          <td>Online</td>
+          <td><a class="video-link" href="https://chrisjim316.github.io/Video/"><button class="btn btn-primary" alt="End Call"><span class="glyphicon glyphicon-earphone" style="font-size:1.5em;"></span></button></a></td>
+        </tr>
+        <tr>
+          <td>Test user 2</td>
+          <td>Online</td>
+          <td><a class="video-link" href="https://chrisjim316.github.io/Video/"><button class="btn btn-primary" alt="End Call"><span class="glyphicon glyphicon-earphone" style="font-size:1.5em;"></span></button></a></td>
+        </tr>
+        <tr>
+          <td>Alan Quayle</td>
+          <td>Offline</td>
+          <td><button class="btn btn-primary" alt="End Call"><span class="glyphicon glyphicon-earphone" style="font-size:1.5em;"></span></button></td>
+        </tr>
+        <tr>
+          <td>Eran Westman</td>
+          <td>Offline</td>
+          <td><button class="btn btn-primary" alt="End Call"><span class="glyphicon glyphicon-earphone" style="font-size:1.5em;"></span></button></td>
+        </tr>
+        <tr>
+          <td>Bent Rye</td>
+          <td>Offline</td>
+          <td><button class="btn btn-primary" alt="End Call"><span class="glyphicon glyphicon-earphone" style="font-size:1.5em;"></span></button></td>
+        </tr>
+        <tr>
+          <td>Test user 6</td>
+          <td>Online</td>
+          <td><a class="video-link" href="https://chrisjim316.github.io/Video/"><button class="btn btn-primary" alt="End Call"><span class="glyphicon glyphicon-earphone" style="font-size:1.5em;"></span></button></a></td>
+        </tr>
+    </table>
+    </div>
+  </div>
+</div>
+
+</body>
