@@ -1,0 +1,134 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- import Athiti font from google fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Athiti" rel="stylesheet">
+  <!-- importing font awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- linking video.css to index.html -->
+  <link rel="stylesheet" type="text/css" href="css/video.css">
+  <!-- linking bootstrap to index.html-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- import jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- linking video.js to index.html -->
+  <script type="text/javascript" src="js/video.js"></script>
+  <!-- linking vidyo.js to index.html : utilizing sponsor resources -->
+  <script src="js/vidyo.js"></script>
+  <!-- Including the Vidyo.io package by adding the javascript path. -->
+  <script src="https://static.vidyo.io/latest/javascript/VidyoClient/VidyoClient.js?onload=onVidyoClientLoaded"></script>
+  <!--  Include Temasys SkylinkJS  -->
+  <script src="https://cdn.temasys.io/skylink/skylinkjs/0.6.x/skylink.complete.min.js"></script>
+  <!-- Including chat.js  -->
+  <script src="js/chat.js"></script>
+</head>
+
+<!-- The scrollable area -->
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+<!-- The navbar - The <a> elements are used to jump to a section in the scrollable area -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand scroll" href="#home"><span class="fa fa-globe"> Culturoo</span></a>
+    </div>
+  </div>
+</nav>
+
+<!-- body layout -->
+<div class="overall-container">
+  <div class="row">
+    <!-- left side -->
+    <div class="cell-1">
+        <div class="well chatbox" style="width: 80%; height: 500px;">
+          <div class="weather">
+            <div class="weatherContainer">
+              <h2 style="color:white !important;"><span id="location"></span></h2>
+            </div>
+          </div>
+          <h2 style="color:white !important;"><span id="description"></span></h2>
+          <h2 style="color:white !important;"><span id="temp"></span><span id="tempUnit" ></span></h2>
+          <div class="well" id="chatOutput">
+            <!-- chat output -->
+            <div id="image"></div>
+            <div id="wiki"></div>
+          </div>
+        </div>
+      <input class="form-control chat-input" id="text" name="text-input" onkeyup="" action="" method="POST"></input>
+      <button id="send" onclick="sendMessage()" style="color:black;">Send message</button>
+      <div class="callButtons">
+        <button class="btn btn-primary" alt="Toggle Video" id="toggleVideo"><span class="glyphicon glyphicon-facetime-video" style="font-size:2.5em;"></span></button>
+        <button class="btn btn-success" alt="Mute"><span class="fa fa-3x fa-deaf"></span></button>
+        <a href="https://chrisjim316.github.io/culturoo-login/"><button class="btn btn-danger" alt="End Call"><span class="glyphicon glyphicon-earphone" style="font-size:2.5em;"></span></button></a>
+        <button class="btn btn-info" alt="Add User"><span class="glyphicon glyphicon-plus-sign" style="font-size:2.5em;"></span></button>
+      </div>
+    </div>
+
+    <!-- right side -->
+    <div class="cell cell-3 col-md-8">
+      <h1 style="text-align:center; color:white !important;"> Be nice, no profanity. </h1>
+      <h1 class="well well-video">
+        <div id="renderer"></div>
+      </h1>
+      <h1 style="text-align:center; color:white !important;">Chat Suggestions</h1>
+      <div id="suggestions"></div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+
+<script>
+$(document).ready( function() {
+  $("#text").on( "keypress", function(event) {
+    if (event.which == 13) {
+      console.log($("#text").val());
+      $.post("localhost:5000/postmethod", $("#text"), function(data){
+        $("#image").html('<img src="' + data["url"][0] + '">');
+        console.log(data);
+      });
+    }
+  });
+});
+
+  var vidyoConnector;
+
+  // Callback method when VidyoIO is done loading (pointer to this method is passed in the onload parameter while including the
+   // VidyoClient.js file)
+    function onVidyoClientLoaded(status) {
+      console.log("VidyoClient load state - " + status.state);
+      if (status.state == "READY") {
+        VC.CreateVidyoConnector({
+          viewId:"renderer", // Div ID where the composited video will be rendered, see VidyoConnector.html;
+          viewStyle:"VIDYO_CONNECTORVIEWSTYLE_Default", // Visual style of the composited renderer
+          remoteParticipants:10, // Maximum number of participants to render
+          logFileFilter:"error",
+          logFileName:"",
+          userData:""
+        }).then(function (vc) {
+          console.log("Create success");
+          vidyoConnector = vc;
+        }).catch(function(error){
+
+        });
+      }
+    }
+
+    function joinCall(){
+      // To join a video conference call Connect method
+      vidyoConnector.Connect({
+        host:"prod.vidyo.io",  // Server name, for most production apps it will be prod.vidyo.io
+        token:"cHJvdmlzaW9uAHVzZXIxQGVkNjU4Ni52aWR5by5pbwA2MzY3NDEwMDg5NwAAZTUyODllZTRkMTYzNDhiYWQ0YTYwYzYzOTQ2ZWEyMDliYWRjZjkxODk3NzcxY2M0NzE3ODZlZjMzOTcyZTc4MTQwMTdkM2Q5ZGQ4YTNkYzRlODk4ZWU2YmY3MDk1MTc4",          // Add generated token (https://developer.vidyo.io/documentation/4-1-16-8/getting-started#Tokens)
+        displayName:"Culturoo",  // Display name
+        resourceId:"demoRoom", // Room name
+        onSuccess: function(){
+          console.log("Connected!! YAY!");
+        },
+        onFailure: function(reason){
+          console.error("Connection failed");
+        },
+        onDisconnected: function(reason) {
+          console.log(" disconnected - " + reason);
+        }
+      })
+    }
+</script>
